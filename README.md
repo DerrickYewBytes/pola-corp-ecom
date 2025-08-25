@@ -8,10 +8,13 @@ Most of the code generated with Cursor AI, Chatgpt and Deepseek. Requirements ar
 - **Product Catalog**: Browse drone components with search and category filtering
 - **Product Details**: View detailed specifications and images
 - **Shopping Cart**: Add, remove, and update quantities with persistent state
-- **Mocked Checkout Process**: Complete order processing with backend integration for mock transaction
-- **Order Management**: Order creation, confirmation, and tracking
-- **Session Management**: Anonymous user session handling with cookies
+- **Mocked Checkout Process**: Complete order processing with backend integration and database persistence
+- **Order Management**: Order creation, confirmation, and tracking with unique order numbers
+- **Session Management**: Anonymous user session handling with cookies and database persistence
 - **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+- **Docker Deployment**: Complete containerized deployment with development and production configurations
+- **Supabase Integration**: Cloud database with real-time data persistence
+- **Frontend-Backend Sync**: Real-time cart synchronization between frontend and backend
 
 ## Tech Stack
 
@@ -23,7 +26,7 @@ Most of the code generated with Cursor AI, Chatgpt and Deepseek. Requirements ar
 - **Validation**: class-validator, class-transformer
 - **Documentation**: Swagger/OpenAPI
 
-## Tech Stack
+### Frontend
 
 - **Framework**: Nuxt 3 (Vue 3)
 - **Language**: TypeScript
@@ -31,6 +34,13 @@ Most of the code generated with Cursor AI, Chatgpt and Deepseek. Requirements ar
 - **State Management**: Pinia
 - **Icons**: Heroicons
 - **HTTP Client**: Axios
+
+### DevOps & Deployment
+
+- **Containerization**: Docker & Docker Compose
+- **Environment Management**: Multi-stage builds for dev/prod
+- **Network Configuration**: IPv6 support for cloud database connectivity
+- **Hot Reloading**: Development environment with live code changes
 
 ## 📁 Project Structure
 
@@ -57,9 +67,44 @@ pola-corp/
 
 ## 🛠️ Installation & Setup
 
+### 🚀 Quick Start with Docker (Recommended)
+
+**1. Clone the repository:**
+```bash
+git clone <repository-url>
+cd pola-corp
+```
+
+**2. Set up environment:**
+```bash
+cp env.example .env
+# Edit .env with your Supabase connection string
+```
+
+**3. Start the application:**
+```bash
+# Development environment
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Production environment
+docker-compose up -d --build
+```
+
+**4. Access the application:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:3001
+- API Docs: http://localhost:3001/api/docs
+
+### Manual Installation
+
 ### Prerequisites
 
-- **Node.js** (v18 or higher)
+**Option 1: Docker Deployment (Recommended)**
+- **Docker Desktop** installed and running
+- **Supabase** database (free tier available)
+
+**Option 2: Local Development**
+- **Node.js** (v20 or higher)
 - **npm**
 - **PostgreSQL** database (Supabase recommended for free hosting)
 
@@ -121,18 +166,146 @@ pola-corp/
 
    The application will be available at `http://localhost:3000`
 
-## 🏗️ Build Instructions
+## 🐳 Docker Deployment (Recommended)
 
-### Docker Deployment (Recommended)
+### Quick Start
 
-For production deployment, use Docker:
+**Prerequisites:**
+- Docker Desktop installed and running
+- Supabase database connection string
+
+**1. Clone and Setup:**
+```bash
+git clone <repository-url>
+cd pola-corp
+cp env.example .env
+```
+
+**2. Configure Environment:**
+Edit `.env` file with your Supabase connection:
+```env
+DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres
+NODE_ENV=development
+PORT=3001
+FRONTEND_URL=http://localhost:3000
+NUXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
+```
+
+**3. Start the Application:**
+```bash
+# Development (with hot reloading)
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Production
+docker-compose up -d --build
+```
+
+**4. Access the Application:**
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:3001
+- **API Documentation**: http://localhost:3001/api/docs
+
+### Docker Architecture
+
+The application uses a multi-container Docker setup:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │    Backend      │    │    Supabase     │
+│   (Nuxt 3)      │◄──►│   (NestJS)      │◄──►│   (PostgreSQL)  │
+│   Port: 3000    │    │   Port: 3001    │    │   (External)    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Docker Commands
 
 ```bash
-# Production deployment
+# Start development environment
+docker-compose -f docker-compose.dev.yml up -d --build
+
+# Start production environment
 docker-compose up -d --build
 
-# Development deployment
-docker-compose -f docker-compose.dev.yml up -d --build
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+
+# Stop containers
+docker-compose -f docker-compose.dev.yml down
+
+# Restart containers
+docker-compose -f docker-compose.dev.yml restart
+
+# Check container status
+docker ps
+
+# Access container shell
+docker exec -it pola-corp-backend-dev sh
+docker exec -it pola-corp-frontend-dev sh
+```
+
+### Environment Configuration
+
+**Development Environment:**
+- Hot reloading enabled
+- Debug logging enabled
+- Source code mounted for live editing
+- Node.js 20 with development dependencies
+
+**Production Environment:**
+- Optimized builds
+- Production dependencies only
+- Static file serving
+- Performance optimized
+
+### Troubleshooting
+
+**Common Issues:**
+
+1. **Port Already in Use:**
+   ```bash
+   # Check what's using the port
+   lsof -i :3000
+   lsof -i :3001
+   
+   # Stop conflicting services
+   docker-compose down
+   ```
+
+2. **Database Connection Issues:**
+   - Verify Supabase connection string in `.env`
+   - Check if Supabase project is active
+   - Ensure IPv6 connectivity (Docker network configured)
+
+3. **Container Won't Start:**
+   ```bash
+   # Check container logs
+   docker logs pola-corp-backend-dev
+   docker logs pola-corp-frontend-dev
+   
+   # Rebuild containers
+   docker-compose -f docker-compose.dev.yml up -d --build --force-recreate
+   ```
+
+4. **Permission Issues:**
+   ```bash
+   # Fix file permissions
+   sudo chown -R $USER:$USER .
+   ```
+
+### Docker Files Structure
+
+```
+pola-corp/
+├── docker-compose.yml              # Production configuration
+├── docker-compose.dev.yml          # Development configuration
+├── .env.example                    # Environment variables template
+├── .dockerignore                   # Docker ignore file
+├── backend/
+│   ├── Dockerfile                  # Production backend image
+│   └── Dockerfile.dev              # Development backend image
+└── frontend/
+    ├── Dockerfile                  # Production frontend image
+    └── Dockerfile.dev              # Development frontend image
 ```
 
 See [DOCKER.md](./DOCKER.md) for detailed Docker deployment instructions.
@@ -348,32 +521,6 @@ PORT=3001
 ```env
 NUXT_PUBLIC_API_BASE_URL=https://your-backend.app/api
 ```
-
-## 🆕 Recent Features (Latest Update)
-
-### **Real Checkout System**
-- **Complete Order Processing**: Full backend integration for order creation and management
-- **Order Confirmation**: Order confirmation pages with order details and tracking
-- **Session Management**: Anonymous user sessions with cookie-based persistence
-- **Cart Synchronization**: Frontend-backend cart sync with localStorage fallback
-
-### **Enhanced Cart Management**
-- **Backend Integration**: Cart items stored in database with session management
-- **Real-time Sync**: Cart changes immediately synced between frontend and backend
-- **Persistent Sessions**: Cart data persists across browser sessions and server restarts
-- **Stock Validation**: Real-time stock checking during cart operations
-
-### **Order Management**
-- **Order Creation**: Complete order processing with customer information
-- **Order Tracking**: Order confirmation with unique order numbers
-- **Order History**: Session-based order history and retrieval
-- **Email Integration Ready**: Order confirmation emails (backend ready)
-
-### **Technical Improvements**
-- **TypeScript Types**: Complete type safety across frontend and backend
-- **Error Handling**: Comprehensive error handling and user feedback
-- **API Documentation**: Updated Swagger documentation for all endpoints
-- **Performance**: Optimized database queries and frontend state management
 
 ## 📝 Development Notes
 
