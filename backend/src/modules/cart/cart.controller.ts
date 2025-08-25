@@ -8,10 +8,12 @@ import {
   Post,
   Put,
   Req,
+  Res,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { CartService } from './cart.service';
+import { SessionService } from '../../core/services/session.service';
 import {
   AddToCartDto,
   CartResponseDto,
@@ -21,15 +23,22 @@ import {
 @ApiTags('cart')
 @Controller('cart')
 export class CartController {
-  constructor(private readonly cartService: CartService) {}
+  constructor(
+    private readonly cartService: CartService,
+    private readonly sessionService: SessionService
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Add item to cart' })
   @ApiResponse({ status: 201, description: 'Item added to cart successfully' })
   @ApiResponse({ status: 400, description: 'Bad request - insufficient stock' })
-  async addToCart(@Body() addToCartDto: AddToCartDto, @Req() req: Request) {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
+  async addToCart(
+    @Body() addToCartDto: AddToCartDto,
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    const sessionId = this.sessionService.getSessionId(req);
+    this.sessionService.setSessionCookie(res, sessionId);
     return this.cartService.addToCart(addToCartDto, sessionId);
   }
 
@@ -41,8 +50,7 @@ export class CartController {
     type: CartResponseDto,
   })
   async getCart(@Req() req: Request): Promise<CartResponseDto> {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
+    const sessionId = this.sessionService.getSessionId(req);
     return this.cartService.getCart(sessionId);
   }
 
@@ -57,8 +65,7 @@ export class CartController {
     @Body() updateCartItemDto: UpdateCartItemDto,
     @Req() req: Request
   ) {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
+    const sessionId = this.sessionService.getSessionId(req);
     return this.cartService.updateCartItem(id, updateCartItemDto, sessionId);
   }
 
@@ -74,17 +81,16 @@ export class CartController {
     @Param('id', ParseIntPipe) id: number,
     @Req() req: Request
   ) {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
+    const sessionId = this.sessionService.getSessionId(req);
     return this.cartService.removeFromCart(id, sessionId);
   }
 
   @Delete()
   @ApiOperation({ summary: 'Clear entire cart' })
   @ApiResponse({ status: 200, description: 'Cart cleared successfully' })
-  async clearCart(@Req() req: Request) {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
+  async clearCart(@Req() req: Request, @Res() res: Response) {
+    const sessionId = this.sessionService.getSessionId(req);
+    this.sessionService.clearSessionCookie(res);
     return this.cartService.clearCart(sessionId);
   }
 }

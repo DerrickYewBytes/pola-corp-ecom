@@ -4,7 +4,9 @@ import type {
   CheckoutRequest,
   Order,
   PaginatedResponse,
+  CartResponse,
 } from '~/types/api';
+import { CookieManager } from '~/utils/cookies';
 
 // Create API instance factory
 const createApi = () => {
@@ -17,20 +19,15 @@ const createApi = () => {
     },
   });
 
-  // Session management
+  // Session management using cookies
   const getSessionId = () => {
     if (import.meta.client) {
-      let sessionId = localStorage.getItem('sessionId');
-      if (!sessionId) {
-        sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        localStorage.setItem('sessionId', sessionId);
-      }
-      return sessionId;
+      return CookieManager.getSessionId();
     }
     return null;
   };
 
-  // Add session ID to requests
+  // Add session ID to requests (for backward compatibility)
   api.interceptors.request.use(config => {
     const sessionId = getSessionId();
     if (sessionId) {
@@ -38,6 +35,17 @@ const createApi = () => {
     }
     return config;
   });
+
+  // Handle cookies from responses
+  api.interceptors.response.use(
+    response => {
+      // Cookies are automatically handled by the browser
+      return response;
+    },
+    error => {
+      return Promise.reject(error);
+    }
+  );
 
   return api;
 };
@@ -83,6 +91,19 @@ export const getProduct = async (id: number): Promise<Product> => {
 export const getCategories = async (): Promise<string[]> => {
   const api = createApi();
   const response = await api.get<string[]>('/categories');
+  return response.data;
+};
+
+// Cart API functions
+export const addToCart = async (data: { productId: number; quantity: number }) => {
+  const api = createApi();
+  const response = await api.post('/cart', data);
+  return response.data;
+};
+
+export const getCart = async (): Promise<CartResponse> => {
+  const api = createApi();
+  const response = await api.get<CartResponse>('/cart');
   return response.data;
 };
 

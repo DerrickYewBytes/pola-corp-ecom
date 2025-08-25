@@ -95,11 +95,7 @@
               Shipping Address
             </h4>
             <address class="text-sm text-gray-900 not-italic">
-              {{ order.shippingAddress.street }}<br />
-              {{ order.shippingAddress.city }},
-              {{ order.shippingAddress.state }}
-              {{ order.shippingAddress.zipCode }}<br />
-              {{ order.shippingAddress.country }}
+              {{ order.shippingAddress }}
             </address>
           </div>
         </div>
@@ -119,7 +115,7 @@
               <h4 class="text-sm font-medium text-gray-900">
                 {{ item.productName }}
               </h4>
-              <p class="text-sm text-gray-500">SKU: {{ item.sku }}</p>
+              <p class="text-sm text-gray-500">Qty: {{ item.quantity }}</p>
             </div>
             <div class="text-right">
               <p class="text-sm text-gray-900">Qty: {{ item.quantity }}</p>
@@ -183,8 +179,9 @@
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+  const formatDate = (date: string | Date) => {
+    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

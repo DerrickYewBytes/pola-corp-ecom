@@ -102,7 +102,7 @@
 </template>
 
 <script setup>
-  const cartStore = useCartStore();
+  const cartStore = useCart();
   const cartItemCount = computed(() => cartStore.itemCount);
 </script>
 

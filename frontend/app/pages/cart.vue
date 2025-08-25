@@ -160,13 +160,14 @@
               >
             </div>
 
-            <NuxtLink
-              to="/checkout"
+            <button
+              @click="navigateToCheckout"
               class="btn btn-primary btn-large w-full"
+              :disabled="itemCount === 0"
               :class="{ 'opacity-50 cursor-not-allowed': itemCount === 0 }"
             >
               Proceed to Checkout
-            </NuxtLink>
+            </button>
 
             <div class="summary-note">
               <p>Free shipping on orders over $100</p>
@@ -181,7 +182,7 @@
 
 <script setup>
   // Stores
-  const cartStore = useCartStore();
+  const cartStore = useCart();
 
   // Computed
   const loading = computed(() => cartStore.loading);
@@ -189,6 +190,9 @@
   const total = computed(() => cartStore.total);
   const itemCount = computed(() => cartStore.itemCount);
   const isEmpty = computed(() => cartStore.isEmpty);
+
+  // Router
+  const router = useRouter();
 
   // Methods
   const updateQuantity = (id, quantity) => {
@@ -202,6 +206,18 @@
   const clearCart = () => {
     if (confirm('Are you sure you want to clear your cart?')) {
       cartStore.clearCart();
+    }
+  };
+
+  const navigateToCheckout = () => {
+    console.log('Navigate to checkout clicked');
+    console.log('Item count:', itemCount.value);
+    console.log('Cart items:', items.value);
+    if (itemCount.value > 0) {
+      console.log('Navigating to checkout...');
+      router.push('/checkout');
+    } else {
+      console.log('Cart is empty, cannot navigate to checkout');
     }
   };
 </script>

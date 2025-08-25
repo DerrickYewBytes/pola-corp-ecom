@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Req, Res } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -7,13 +7,17 @@ import {
   ApiHeader,
 } from '@nestjs/swagger';
 import { CheckoutService } from './checkout.service';
+import { SessionService } from '../../core/services/session.service';
 import { CheckoutDto, OrderResponseDto } from './dto/checkout.dto';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 @ApiTags('checkout')
 @Controller('checkout')
 export class CheckoutController {
-  constructor(private readonly checkoutService: CheckoutService) {}
+  constructor(
+    private readonly checkoutService: CheckoutService,
+    private readonly sessionService: SessionService
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Process checkout and create order' })
@@ -32,11 +36,17 @@ export class CheckoutController {
   })
   async processCheckout(
     @Body() checkoutDto: CheckoutDto,
-    @Req() req: Request
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response
   ): Promise<OrderResponseDto> {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
-    return this.checkoutService.processCheckout(checkoutDto, sessionId);
+    console.log('Checkout controller: Received checkout request:', checkoutDto);
+    const sessionId = this.sessionService.getSessionId(req);
+    console.log('Checkout controller: Session ID:', sessionId);
+    const result = await this.checkoutService.processCheckout(checkoutDto, sessionId);
+    console.log('Checkout controller: Service returned result:', result);
+    this.sessionService.clearSessionCookie(res);
+    console.log('Checkout controller: Returning result to client');
+    return result;
   }
 
   @Get('orders/:orderNumber')
@@ -66,8 +76,7 @@ export class CheckoutController {
     description: 'Session ID for anonymous users',
   })
   async getOrders(@Req() req: Request): Promise<OrderResponseDto[]> {
-    const sessionId =
-      (req.headers['x-session-id'] as string) || 'default-session';
+    const sessionId = this.sessionService.getSessionId(req);
     return this.checkoutService.getOrdersBySession(sessionId);
   }
 }

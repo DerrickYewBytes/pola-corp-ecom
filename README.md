@@ -1,14 +1,36 @@
 # Pola Corp - Drone Components E-Commerce
 
 A full-stack e-commerce application for Pola Corp, specializing in drone components. Built with NestJS backend and NuxtJS 3 frontend.
+Most of the code generated with Cursor AI, Chatgpt and Deepseek. Requirements are refined in Chatgpt and Deepseek before executed in Cursor AI with manual monitoring and fine tuning to get required result.
 
 ## 🚀 Features
 
 - **Product Catalog**: Browse drone components with search and category filtering
 - **Product Details**: View detailed specifications and images
 - **Shopping Cart**: Add, remove, and update quantities with persistent state
-- **Checkout Process**: Mock checkout with order confirmation
+- **Mocked Checkout Process**: Complete order processing with backend integration for mock transaction
+- **Order Management**: Order creation, confirmation, and tracking
+- **Session Management**: Anonymous user session handling with cookies
 - **Responsive Design**: Mobile-friendly interface with Tailwind CSS
+
+## Tech Stack
+
+### Backend
+
+- **Framework**: NestJS
+- **Database**: PostgreSQL (Supabase)
+- **ORM**: TypeORM
+- **Validation**: class-validator, class-transformer
+- **Documentation**: Swagger/OpenAPI
+
+## Tech Stack
+
+- **Framework**: Nuxt 3 (Vue 3)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Pinia
+- **Icons**: Heroicons
+- **HTTP Client**: Axios
 
 ## 📁 Project Structure
 
@@ -38,7 +60,7 @@ pola-corp/
 ### Prerequisites
 
 - **Node.js** (v18 or higher)
-- **npm** or **yarn**
+- **npm**
 - **PostgreSQL** database (Supabase recommended for free hosting)
 
 ### Backend Setup
@@ -59,6 +81,7 @@ pola-corp/
    DATABASE_URL=your_postgresql_connection_string
    NODE_ENV=development
    PORT=3001
+   FRONTEND_URL=http://localhost:3000 (if hosted locally with default settings)
    ```
 
 4. **Database Setup:**
@@ -88,7 +111,7 @@ pola-corp/
 3. **Environment Configuration:**
    Create a `.env` file in the frontend directory:
    ```env
-   NUXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
+   NUXT_PUBLIC_API_URL=http://localhost:3001/api
    ```
 
 4. **Run the development server:**
@@ -128,9 +151,12 @@ npm run preview
 - `GET /api/cart` - Get cart contents
 - `PUT /api/cart/:id` - Update cart item quantity
 - `DELETE /api/cart/:id` - Remove item from cart
+- `DELETE /api/cart` - Clear entire cart
 
 ### Checkout
 - `POST /api/checkout` - Process order and clear cart
+- `GET /api/checkout/orders/:orderNumber` - Get order by order number
+- `GET /api/checkout/orders` - Get orders for current session
 
 ## 🎨 Design Decisions
 
@@ -154,8 +180,10 @@ interface Product {
   description: string;
   price: number;
   category: string;
-  image: string;
+  imageUrl: string;
   sku: string;
+  stockQuantity: number;
+  specifications: Record<string, any>;
 }
 
 // CartItem: Shopping cart line items
@@ -163,6 +191,7 @@ interface CartItem {
   id: number;
   productId: number;
   quantity: number;
+  sessionId: string;
   product: Product;
 }
 
@@ -170,10 +199,23 @@ interface CartItem {
 interface Order {
   id: number;
   orderNumber: string;
-  items: CartItem[];
+  customerName: string;
+  customerEmail: string;
+  shippingAddress: string;
+  items: OrderItem[];
   total: number;
-  customerInfo: CustomerInfo;
+  status: string;
+  sessionId: string;
   createdAt: Date;
+}
+
+// OrderItem: Individual items in an order
+interface OrderItem {
+  productId: number;
+  productName: string;
+  quantity: number;
+  price: number;
+  total: number;
 }
 ```
 
@@ -216,6 +258,10 @@ src/
 - **Pagination**: Page-based pagination with configurable limits
 - **Search**: Case-insensitive search across product name, description, and category
 - **Category Filtering**: Separate API endpoint for categories
+- **Session Management**: Anonymous user sessions with UUID-based session IDs
+- **Cart Synchronization**: Frontend-backend cart sync with localStorage fallback
+- **Stock Management**: Product stock validation and updates
+- **Order Processing**: Complete order creation with order number generation
 - **Validation**: Request validation with class-validator
 - **Error Handling**: Global exception filters
 
@@ -230,8 +276,9 @@ src/
 
 // cart.ts - Shopping cart management
 - addToCart, removeFromCart, updateQuantity
-- localStorage persistence
+- localStorage persistence with backend sync
 - cart total calculations
+- loadFromBackend, loadFromStorage
 ```
 
 #### **Component Structure**
@@ -243,9 +290,9 @@ src/
 ## 🤔 Assumptions & Trade-offs
 
 ### **Data Persistence**
-- **Assumption**: In-memory cart storage with localStorage backup
-- **Trade-off**: Cart data lost on server restart, but simple implementation
-- **Future**: Could implement Redis for distributed cart storage
+- **Assumption**: Database-backed cart storage with localStorage sync
+- **Trade-off**: Cart data persists across server restarts with session management
+- **Future**: Could implement Redis for distributed cart storage and caching
 
 ### **Product Images**
 - **Assumption**: Static image URLs or placeholder images
@@ -253,13 +300,13 @@ src/
 - **Future**: Could integrate with cloud storage (AWS S3, Cloudinary)
 
 ### **Payment Processing**
-- **Assumption**: Mock checkout process only
-- **Trade-off**: No real payment integration for demo purposes
+- **Assumption**: Mock order processing with order confirmation
+- **Trade-off**: No payment gateway integration for demo purposes
 - **Future**: Could integrate Stripe, PayPal, or other payment providers
 
 ### **Authentication**
-- **Assumption**: No user authentication required
-- **Trade-off**: No user accounts or order history
+- **Assumption**: Anonymous user sessions with cookie-based session management
+- **Trade-off**: No user accounts but persistent cart and order history per session
 - **Future**: Could implement JWT authentication with user management
 
 ### **Performance**
@@ -286,6 +333,32 @@ PORT=3001
 NUXT_PUBLIC_API_BASE_URL=https://your-backend.app/api
 ```
 
+## 🆕 Recent Features (Latest Update)
+
+### **Real Checkout System**
+- **Complete Order Processing**: Full backend integration for order creation and management
+- **Order Confirmation**: Order confirmation pages with order details and tracking
+- **Session Management**: Anonymous user sessions with cookie-based persistence
+- **Cart Synchronization**: Frontend-backend cart sync with localStorage fallback
+
+### **Enhanced Cart Management**
+- **Backend Integration**: Cart items stored in database with session management
+- **Real-time Sync**: Cart changes immediately synced between frontend and backend
+- **Persistent Sessions**: Cart data persists across browser sessions and server restarts
+- **Stock Validation**: Real-time stock checking during cart operations
+
+### **Order Management**
+- **Order Creation**: Complete order processing with customer information
+- **Order Tracking**: Order confirmation with unique order numbers
+- **Order History**: Session-based order history and retrieval
+- **Email Integration Ready**: Order confirmation emails (backend ready)
+
+### **Technical Improvements**
+- **TypeScript Types**: Complete type safety across frontend and backend
+- **Error Handling**: Comprehensive error handling and user feedback
+- **API Documentation**: Updated Swagger documentation for all endpoints
+- **Performance**: Optimized database queries and frontend state management
+
 ## 📝 Development Notes
 
 ### **TypeScript Configuration**
@@ -305,16 +378,21 @@ NUXT_PUBLIC_API_BASE_URL=https://your-backend.app/api
 
 ## 🔮 Future Enhancements
 
-1. **User Authentication**: JWT-based user management
-2. **Order History**: User order tracking
-3. **Product Reviews**: Customer review system
-4. **Inventory Management**: Stock tracking and alerts
-5. **Admin Panel**: Product and order management
-6. **Email Notifications**: Order confirmations and updates
-7. **Payment Integration**: Real payment processing
-8. **Image Upload**: Product image management
-9. **Advanced Search**: Elasticsearch integration
-10. **Performance Optimization**: Caching and CDN
+1. **User Authentication**: JWT-based user management with user accounts
+2. **Order History**: User order tracking and management
+3. **Product Reviews**: Customer review and rating system
+4. **Inventory Management**: Real-time stock tracking and low stock alerts
+5. **Admin Panel**: Product and order management dashboard
+6. **Email Notifications**: Order confirmations, shipping updates, and marketing emails
+7. **Payment Integration**: Stripe, PayPal, or other payment gateway integration
+8. **Image Upload**: Product image management with cloud storage
+9. **Advanced Search**: Elasticsearch integration for better search performance
+10. **Performance Optimization**: Redis caching, CDN for images, and database optimization
+11. **Wishlist**: User wishlist functionality
+12. **Product Recommendations**: AI-powered product suggestions
+13. **Multi-language Support**: Internationalization (i18n)
+14. **Mobile App**: React Native or Flutter mobile application
+15. **Analytics**: Order analytics and business intelligence
 
 ## 📞 Support
 

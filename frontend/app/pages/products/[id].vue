@@ -377,7 +377,7 @@
   const router = useRouter();
 
   // Stores
-  const cartStore = useCartStore();
+  const cartStore = useCart();
   const productsStore = useProductsStore();
 
   // Reactive state
@@ -436,9 +436,9 @@
     }
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (product.value && product.value.stockQuantity > 0) {
-      cartStore.addItem({
+      await cartStore.addItem({
         id: product.value.id,
         name: product.value.name,
         price: product.value.price,

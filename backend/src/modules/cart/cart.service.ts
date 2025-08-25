@@ -56,10 +56,11 @@ export class CartService {
   }
 
   async getCart(sessionId: string): Promise<CartResponseDto> {
+    console.log('Getting cart for sessionId:', sessionId);
     const cartItems = await this.cartItemRepository.find({
       where: { sessionId },
-      relations: ['product'],
     });
+    console.log('Found cart items:', cartItems);
 
     // Fetch product details for each cart item
     const itemsWithProducts = await Promise.all(

@@ -4,11 +4,12 @@ import { CartService } from './cart.service';
 import { CartController } from './cart.controller';
 import { CartItem } from '../../core/models/cart-item.entity';
 import { ProductsModule } from '../products/products.module';
+import { SessionService } from '../../core/services/session.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CartItem]), ProductsModule],
   controllers: [CartController],
-  providers: [CartService],
+  providers: [CartService, SessionService],
   exports: [CartService],
 })
 export class CartModule {}

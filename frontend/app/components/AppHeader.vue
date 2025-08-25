@@ -126,7 +126,7 @@
   const isMobileMenuOpen = ref(false);
 
   // Cart store integration
-  const cartStore = useCartStore();
+  const cartStore = useCart();
   const cartItemCount = computed(() => cartStore.itemCount);
 
   const toggleMobileMenu = () => {

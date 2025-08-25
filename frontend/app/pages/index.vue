@@ -242,7 +242,7 @@
 <script setup>
   // Stores
   const productsStore = useProductsStore();
-  const cartStore = useCartStore();
+  const cartStore = useCart();
 
   // Reactive state
   const email = ref('');
@@ -280,8 +280,8 @@
     navigateTo(`/products?category=${encodeURIComponent(category)}`);
   };
 
-  const handleAddToCart = product => {
-    cartStore.addItem({
+  const handleAddToCart = async product => {
+    await cartStore.addItem({
       id: product.id,
       name: product.name,
       price: Number(product.price || 0),

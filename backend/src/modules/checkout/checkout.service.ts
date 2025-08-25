@@ -23,10 +23,14 @@ export class CheckoutService {
     checkoutDto: CheckoutDto,
     sessionId: string
   ): Promise<OrderResponseDto> {
+    console.log('Checkout process started with sessionId:', sessionId);
+    
     // Get current cart
     const cart = await this.cartService.getCart(sessionId);
+    console.log('Cart retrieved:', cart);
 
     if (cart.items.length === 0) {
+      console.log('Cart is empty for sessionId:', sessionId);
       throw new BadRequestException('Cart is empty');
     }
 
@@ -76,6 +80,7 @@ export class CheckoutService {
     // Clear the cart
     await this.cartService.clearCart(sessionId);
 
+    console.log('Checkout completed successfully, returning order:', savedOrder);
     return savedOrder;
   }
 

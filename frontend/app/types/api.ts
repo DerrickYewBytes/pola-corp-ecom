@@ -28,22 +28,33 @@ export interface CartItem {
   quantity: number;
 }
 
+// Backend cart item interface
+export interface BackendCartItem {
+  id: number;
+  productId: number;
+  quantity: number;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+    imageUrl: string;
+    stockQuantity: number;
+  };
+}
+
+// Cart response interface
+export interface CartResponse {
+  items: BackendCartItem[];
+  total: number;
+  itemCount: number;
+}
+
 // Checkout related interfaces
 export interface CheckoutRequest {
   customerName: string;
   customerEmail: string;
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
-  payment: {
-    cardNumber: string;
-    expiryDate: string;
-    cvv: string;
-  };
+  shippingAddress: string;
+  sessionId?: string;
 }
 
 export interface OrderItem {
@@ -51,26 +62,20 @@ export interface OrderItem {
   productName: string;
   quantity: number;
   price: number;
-  sku: string;
+  total: number;
 }
 
 export interface Order {
-  id: string;
+  id: number;
   orderNumber: string;
   customerName: string;
   customerEmail: string;
-  shippingAddress: {
-    street: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    country: string;
-  };
+  shippingAddress: string;
   items: OrderItem[];
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  createdAt: string;
-  updatedAt: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // API response interfaces

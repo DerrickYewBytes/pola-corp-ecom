@@ -447,7 +447,7 @@
 <script setup>
   // Stores
   const productsStore = useProductsStore();
-  const cartStore = useCartStore();
+  const cartStore = useCart();
 
   // Reactive state
   const viewMode = ref('grid');
@@ -560,8 +560,8 @@
     }, 300); // 300ms debounce delay
   });
 
-  const handleAddToCart = product => {
-    cartStore.addItem({
+  const handleAddToCart = async product => {
+    await cartStore.addItem({
       id: product.id,
       name: product.name,
       price: product.price,

@@ -268,10 +268,13 @@
 
 <script setup>
   // Stores
-  const cartStore = useCartStore();
+  const cartStore = useCart();
 
   // Router
   const router = useRouter();
+
+  // API
+  import { processCheckout } from '~/composables/useApi';
 
   // Reactive state
   const submitting = ref(false);
@@ -306,20 +309,28 @@
     submitting.value = true;
 
     try {
-      // Simulate checkout process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Validate form data
+      if (!form.value?.customerName || !form.value?.customerEmail) {
+        alert('Please fill in all required fields.');
+        return;
+      }
 
-      // Generate order number
-      const orderNumber = 'ORD-' + Date.now().toString().slice(-8);
+      // Call real checkout API
+      const order = await processCheckout({
+        customerName: form.value.customerName,
+        customerEmail: form.value.customerEmail,
+        shippingAddress: `${form.value.shippingAddress?.street || ''}, ${form.value.shippingAddress?.city || ''}, ${form.value.shippingAddress?.state || ''} ${form.value.shippingAddress?.zipCode || ''}, ${form.value.shippingAddress?.country || ''}`
+      });
 
       // Clear cart after successful checkout
       cartStore.clearCart();
 
-      // Redirect to confirmation page
-      await router.push(`/checkout/confirmation/${orderNumber}`);
+      // Redirect to confirmation page with real order number
+      await router.push(`/checkout/confirmation/${order.orderNumber}`);
     } catch (error) {
       console.error('Checkout failed:', error);
-      // You could show an error message to the user here
+      // Show error message to user
+      alert('Checkout failed. Please try again.');
     } finally {
       submitting.value = false;
     }
