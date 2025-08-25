@@ -61,6 +61,7 @@ frontend/
 ## Pages
 
 ### Product Catalog (`/`)
+
 - Display all products in a responsive grid
 - Search functionality with real-time filtering
 - Category filtering
@@ -68,6 +69,7 @@ frontend/
 - Add to cart functionality
 
 ### Product Details (`/products/[id]`)
+
 - Detailed product information
 - Product specifications
 - Quantity selector
@@ -75,6 +77,7 @@ frontend/
 - Related products
 
 ### Shopping Cart (`/cart`)
+
 - View all cart items
 - Update quantities
 - Remove items
@@ -82,12 +85,14 @@ frontend/
 - Proceed to checkout
 
 ### Checkout (`/checkout`)
+
 - Customer information form
 - Shipping address form
 - Order review
 - Place order functionality
 
 ### Order Confirmation (`/checkout/confirmation/[orderNumber]`)
+
 - Order success message
 - Order details
 - Customer information
@@ -97,12 +102,14 @@ frontend/
 ## Components
 
 ### ProductCard
+
 - Displays product information in a card format
 - Product image, name, price, and stock status
 - Add to cart button
 - Links to product detail page
 
 ### CartItem
+
 - Displays individual cart items
 - Quantity controls (increase/decrease)
 - Remove item functionality
@@ -111,12 +118,14 @@ frontend/
 ## Stores
 
 ### Products Store
+
 - Manages product data and filtering
 - Search functionality
 - Category filtering
 - Loading and error states
 
 ### Cart Store
+
 - Manages shopping cart state
 - Add, update, and remove items
 - Cart totals and item counts
@@ -144,15 +153,18 @@ The application uses Tailwind CSS with custom utility classes defined in `assets
 ## Development
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 
 ### Installation
+
 ```bash
 npm install
 ```
 
 ### Development Server
+
 ```bash
 npm run dev
 ```
@@ -160,11 +172,13 @@ npm run dev
 The application will be available at `http://localhost:3000`
 
 ### Build for Production
+
 ```bash
 npm run build
 ```
 
 ### Type Checking
+
 ```bash
 npm run type-check
 ```
@@ -182,11 +196,13 @@ For production, set the API URL to your deployed backend URL.
 ## Deployment
 
 ### Vercel (Recommended)
+
 1. Connect your repository to Vercel
 2. Set environment variables in Vercel dashboard
 3. Deploy automatically on push to main branch
 
 ### Manual Deployment
+
 1. Build the application: `npm run build`
 2. Deploy the `.output` directory to your hosting provider
 

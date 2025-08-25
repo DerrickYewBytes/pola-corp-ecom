@@ -137,14 +137,7 @@ npm run preview
 ### Backend Architecture
 
 #### **Framework Choice: NestJS**
-- **Why NestJS**: Chosen for its modular architecture, dependency injection, and excellent TypeScript support
-- **Benefits**: Built-in validation, Swagger documentation, and enterprise-ready patterns
-
 #### **Database: PostgreSQL with TypeORM**
-- **Why PostgreSQL**: Reliable, ACID-compliant, excellent for e-commerce data
-- **Why TypeORM**: Type-safe database operations, migrations, and entity management
-- **Hosting**: Supabase for free tier PostgreSQL hosting
-
 #### **API Design**
 - **RESTful Architecture**: Standard HTTP methods and status codes
 - **Pagination**: 20 items per page to handle large product catalogs
@@ -187,38 +180,13 @@ interface Order {
 ### Frontend Architecture
 
 #### **Framework Choice: NuxtJS 3**
-- **Why NuxtJS 3**: Vue 3 with SSR, file-based routing, and excellent developer experience
-- **Benefits**: Auto-imports, built-in TypeScript support, and performance optimizations
-
 #### **State Management: Pinia**
-- **Why Pinia**: Vue 3's recommended state management, TypeScript-friendly
-- **Benefits**: DevTools support, modular stores, and reactive state
-
 #### **Styling: Tailwind CSS**
-- **Why Tailwind**: Utility-first CSS framework for rapid development
-- **Benefits**: Responsive design, consistent spacing, and custom component styling
-
-#### **API Integration**
-- **Axios**: HTTP client for API requests
-- **TypeScript Interfaces**: Strict typing for all API responses
-- **Error Handling**: Centralized error handling with user-friendly messages
-
 #### **User Experience**
 - **Responsive Design**: Mobile-first approach with Tailwind breakpoints
 - **Search & Filtering**: Debounced search (300ms) for better performance
 - **Cart Persistence**: localStorage for cart state across sessions
 - **Loading States**: Skeleton loaders and loading indicators
-
-### Deployment Strategy
-
-#### **Backend Deployment**
-- **Platform**: Railway (recommended) or Render
-- **Why**: Excellent Node.js support, automatic deployments, built-in PostgreSQL
-- **Alternative**: Vercel (limited for full Node.js apps)
-
-#### **Frontend Deployment**
-- **Platform**: Vercel
-- **Why**: Optimized for NuxtJS, automatic deployments, excellent performance
 
 ## 🔧 Technical Implementation
 
@@ -238,6 +206,10 @@ src/
 │   └── checkout/
 └── core/
     └── config/
+    └── models/
+     ├── products/
+     ├── cart/
+     └── checkout/
 ```
 
 #### **Key Features**
@@ -300,38 +272,18 @@ src/
 - **Trade-off**: No advanced security features
 - **Future**: Could implement rate limiting, input sanitization, CSRF protection
 
-## 🚀 Deployment
-
-### Railway Deployment (Recommended)
-
-1. **Backend Deployment:**
-   ```bash
-   # Install Railway CLI
-   npm install -g @railway/cli
-   
-   # Login and deploy
-   railway login
-   railway init
-   railway up
-   ```
-
-2. **Frontend Deployment:**
-   - Connect GitHub repository to Vercel
-   - Set environment variables
-   - Deploy automatically on push
-
 ### Environment Variables
 
-**Backend (Railway):**
+**Backend:**
 ```env
 DATABASE_URL=postgresql://...
 NODE_ENV=production
 PORT=3001
 ```
 
-**Frontend (Vercel):**
+**Frontend:**
 ```env
-NUXT_PUBLIC_API_BASE_URL=https://your-backend.railway.app/api
+NUXT_PUBLIC_API_BASE_URL=https://your-backend.app/api
 ```
 
 ## 📝 Development Notes
@@ -367,8 +319,8 @@ NUXT_PUBLIC_API_BASE_URL=https://your-backend.railway.app/api
 ## 📞 Support
 
 For questions or issues, please contact:
-- **Email**: weijet.auyong@aonic.com
-- **Repository**: [GitHub Repository URL]
+- **Email**: derrickyewcm@gmail.com
+- **Repository**: github[https://github.com/DerrickYewBytes]
 
 ---
 

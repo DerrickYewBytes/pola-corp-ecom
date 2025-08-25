@@ -13,7 +13,10 @@ export class AddToCartDto {
   @Min(1)
   quantity: number;
 
-  @ApiProperty({ description: 'Session ID for anonymous users', required: false })
+  @ApiProperty({
+    description: 'Session ID for anonymous users',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   sessionId?: string;

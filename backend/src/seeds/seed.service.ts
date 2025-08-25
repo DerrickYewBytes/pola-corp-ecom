@@ -8,7 +8,7 @@ import { sampleProducts } from './product.seed';
 export class SeedService {
   constructor(
     @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>
   ) {}
 
   async seedProducts(): Promise<void> {

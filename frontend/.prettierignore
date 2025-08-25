@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.nuxt/
+.output/
+dist/
+build/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# Coverage
+coverage/
+
+# Package files
+package-lock.json
+yarn.lock
+
+# Generated files
+*.d.ts
+*.js.map
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Nuxt specific
+.nitro/
+.cache/
+.data/

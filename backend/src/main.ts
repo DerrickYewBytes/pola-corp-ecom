@@ -11,7 +11,7 @@ async function bootstrap() {
     origin: [
       process.env.FRONTEND_URL || 'http://localhost:3000',
       'https://*.vercel.app',
-      'https://*.vercel.app/*'
+      'https://*.vercel.app/*',
     ],
     credentials: true,
   });
@@ -22,7 +22,7 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
-    }),
+    })
   );
 
   // Global prefix for API routes

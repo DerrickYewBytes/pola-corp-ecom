@@ -9,10 +9,12 @@ import { PaginationQueryDto, PaginatedResponseDto } from './dto/pagination.dto';
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
-    private readonly productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>
   ) {}
 
-  async findAll(paginationQuery: PaginationQueryDto = { page: 1, limit: 20 }): Promise<PaginatedResponseDto<Product>> {
+  async findAll(
+    paginationQuery: PaginationQueryDto = { page: 1, limit: 20 }
+  ): Promise<PaginatedResponseDto<Product>> {
     const { page = 1, limit = 20 } = paginationQuery;
     const skip = (page - 1) * limit;
 
@@ -41,12 +43,15 @@ export class ProductsService {
     return product;
   }
 
-  async findByCategory(category: string, paginationQuery: PaginationQueryDto = { page: 1, limit: 20 }): Promise<PaginatedResponseDto<Product>> {
+  async findByCategory(
+    category: string,
+    paginationQuery: PaginationQueryDto = { page: 1, limit: 20 }
+  ): Promise<PaginatedResponseDto<Product>> {
     const { page = 1, limit = 20 } = paginationQuery;
     const skip = (page - 1) * limit;
 
     const queryBuilder = this.productRepository.createQueryBuilder('product');
-    
+
     const [items, total] = await queryBuilder
       .where('LOWER(product.category) = LOWER(:category)', { category })
       .orderBy('product.name', 'ASC')
@@ -65,7 +70,10 @@ export class ProductsService {
     };
   }
 
-  async search(query: string, paginationQuery: PaginationQueryDto = { page: 1, limit: 20 }): Promise<PaginatedResponseDto<Product>> {
+  async search(
+    query: string,
+    paginationQuery: PaginationQueryDto = { page: 1, limit: 20 }
+  ): Promise<PaginatedResponseDto<Product>> {
     const { page = 1, limit = 20 } = paginationQuery;
     const skip = (page - 1) * limit;
 
@@ -96,7 +104,10 @@ export class ProductsService {
     return this.productRepository.save(product);
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto
+  ): Promise<Product> {
     const product = await this.findOne(id);
     Object.assign(product, updateProductDto);
     return this.productRepository.save(product);
@@ -112,7 +123,7 @@ export class ProductsService {
       .createQueryBuilder('product')
       .select('DISTINCT product.category', 'category')
       .getRawMany();
-    
+
     return categories.map(cat => cat.category);
   }
 

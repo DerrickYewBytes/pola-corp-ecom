@@ -10,20 +10,25 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
   constructor(private configService: ConfigService) {}
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
-    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
-    const isDevelopment = this.configService.get<string>('NODE_ENV') === 'development';
+    const isProduction =
+      this.configService.get<string>('NODE_ENV') === 'production';
+    const isDevelopment =
+      this.configService.get<string>('NODE_ENV') === 'development';
     const databaseUrl = this.configService.get<string>('DATABASE_URL');
-    
+
     // Debug logging
     console.log('🔍 Database Config Debug:');
     console.log('- NODE_ENV:', this.configService.get<string>('NODE_ENV'));
     console.log('- DATABASE_URL exists:', !!databaseUrl);
-    console.log('- DATABASE_URL starts with:', databaseUrl ? databaseUrl.substring(0, 20) + '...' : 'NOT SET');
-    
+    console.log(
+      '- DATABASE_URL starts with:',
+      databaseUrl ? databaseUrl.substring(0, 20) + '...' : 'NOT SET'
+    );
+
     if (!databaseUrl) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
-    
+
     return {
       type: 'postgres',
       url: databaseUrl,

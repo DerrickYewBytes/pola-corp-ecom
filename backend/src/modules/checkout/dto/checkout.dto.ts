@@ -16,7 +16,10 @@ export class CheckoutDto {
   @IsNotEmpty()
   shippingAddress: string;
 
-  @ApiProperty({ description: 'Session ID for anonymous users', required: false })
+  @ApiProperty({
+    description: 'Session ID for anonymous users',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   sessionId?: string;

@@ -9,7 +9,11 @@ export class CategoriesController {
 
   @Get()
   @ApiOperation({ summary: 'Get all product categories' })
-  @ApiResponse({ status: 200, description: 'List of categories', type: [String] })
+  @ApiResponse({
+    status: 200,
+    description: 'List of categories',
+    type: [String],
+  })
   getCategories(): Promise<string[]> {
     return this.productsService.getCategories();
   }

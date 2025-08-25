@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from '../../core/models/order.entity';
@@ -12,22 +16,30 @@ export class CheckoutService {
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     private readonly cartService: CartService,
-    private readonly productsService: ProductsService,
+    private readonly productsService: ProductsService
   ) {}
 
-  async processCheckout(checkoutDto: CheckoutDto, sessionId: string): Promise<OrderResponseDto> {
+  async processCheckout(
+    checkoutDto: CheckoutDto,
+    sessionId: string
+  ): Promise<OrderResponseDto> {
     // Get current cart
     const cart = await this.cartService.getCart(sessionId);
-    
+
     if (cart.items.length === 0) {
       throw new BadRequestException('Cart is empty');
     }
 
     // Validate stock for all items
     for (const item of cart.items) {
-      const hasStock = await this.productsService.checkStock(item.productId, item.quantity);
+      const hasStock = await this.productsService.checkStock(
+        item.productId,
+        item.quantity
+      );
       if (!hasStock) {
-        throw new BadRequestException(`Insufficient stock for product: ${item.product.name}`);
+        throw new BadRequestException(
+          `Insufficient stock for product: ${item.product.name}`
+        );
       }
     }
 
@@ -88,7 +100,9 @@ export class CheckoutService {
 
   private generateOrderNumber(): string {
     const timestamp = Date.now().toString();
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const random = Math.floor(Math.random() * 1000)
+      .toString()
+      .padStart(3, '0');
     return `POLA-${timestamp}-${random}`;
   }
 }

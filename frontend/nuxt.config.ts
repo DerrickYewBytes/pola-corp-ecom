@@ -10,14 +10,15 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/image',
     '@nuxt/scripts',
-    '@nuxt/test-utils'
+    '@nuxt/test-utils',
   ],
 
   // Runtime config for environment variables
   runtimeConfig: {
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001/api'
-    }
+      apiBaseUrl:
+        process.env.NUXT_PUBLIC_API_URL || 'http://localhost:3001/api',
+    },
   },
 
   // App configuration
@@ -27,39 +28,39 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Specialist supplier of drone components - motors, propellers, flight controllers, batteries, and more.' }
+        {
+          name: 'description',
+          content:
+            'Specialist supplier of drone components - motors, propellers, flight controllers, batteries, and more.',
+        },
       ],
-      link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-      ]
-    }
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    },
   },
-
-
 
   // Build configuration
   build: {
-    transpile: ['@headlessui/vue']
+    transpile: ['@headlessui/vue'],
   },
 
   // Nitro configuration for Vercel deployment
   nitro: {
-    preset: 'vercel'
+    preset: 'vercel',
   },
 
   // TypeScript configuration
   typescript: {
     strict: true,
-    typeCheck: true
+    typeCheck: true,
   },
 
   // Auto-imports
   imports: {
-    dirs: ['composables/**', 'stores/**']
+    dirs: ['composables/**', 'stores/**'],
   },
 
   // Tailwind CSS configuration
   tailwindcss: {
-    cssPath: '~/assets/css/main.css'
-  }
-})
+    cssPath: '~/assets/css/main.css',
+  },
+});
