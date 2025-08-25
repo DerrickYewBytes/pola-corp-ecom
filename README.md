@@ -123,7 +123,23 @@ pola-corp/
 
 ## 🏗️ Build Instructions
 
-### Backend Build
+### Docker Deployment (Recommended)
+
+For production deployment, use Docker:
+
+```bash
+# Production deployment
+docker-compose up -d --build
+
+# Development deployment
+docker-compose -f docker-compose.dev.yml up -d --build
+```
+
+See [DOCKER.md](./DOCKER.md) for detailed Docker deployment instructions.
+
+### Manual Build
+
+#### Backend Build
 
 ```bash
 cd backend
@@ -131,7 +147,7 @@ npm run build
 npm run start:prod
 ```
 
-### Frontend Build
+#### Frontend Build
 
 ```bash
 cd frontend
